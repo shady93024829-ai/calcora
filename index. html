@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beast Shado Universe - مسار التطور المطلق</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #050505;
+            --accent-pink: #ec4899;
+            --accent-purple: #8b5cf6;
+            --accent-gold: #fbbf24;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-silver: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: #f8fafc;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            user-select: none;
+            transition: background 0.5s ease;
+        }
+
+        /* --- Dynamic Stage Backgrounds --- */
+        .bg-base { background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #050505 70%); }
+        .bg-ssj { background-image: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.3) 0%, #050505 70%); }
+        .bg-rose { background-image: radial-gradient(circle at 50% 0%, rgba(190, 24, 93, 0.3) 0%, #050505 70%); }
+        .bg-ui { background-image: radial-gradient(circle at 50% 0%, rgba(71, 85, 105, 0.5) 0%, #050505 70%); }
+        .bg-ultimate { background-image: radial-gradient(circle at 30% 0%, rgba(139, 92, 246, 0.3) 0%, transparent 70%), radial-gradient(circle at 70% 0%, rgba(229, 231, 235, 0.2) 0%, #050505 70%); }
+
+
+        /* --- Animations --- */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(236,72,153,0.5), 0 0 40px rgba(139,92,246,0.3); }
+            50% { box-shadow: 0 0 40px rgba(236,72,153,0.8), 0 0 60px rgba(139,92,246,0.6); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-1deg); }
+            75% { transform: translateX(5px) rotate(1deg); }
+        }
+
+        @keyframes stage-up {
+            0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+            50% { transform: scale(1.1); opacity: 0; filter: brightness(2); }
+            100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+        }
+
+        /* --- Display Settings --- */
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            text-align: right;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .settings-row:hover { background: #131f38; border-color: #334155; }
+
+        /* --- Ambient animated background (soft colored orbs drifting slowly) --- */
+        #aura-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 320px;
+            max-width: 85vw;
+            height: 100vh;
+            background: #0a0f1c; /* Darker background */
+            border-left: 1px solid #1e293b;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.9);
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            background: #050810;
+        }
+
+        .sidebar-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* Custom Scrollbar for Sidebar */
+        .sidebar-content::-webkit-scrollbar { width: 4px; }
+        .sidebar-content::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-content::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .btn-vip {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 16px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            display: block;
+            text-decoration: none;
+            color: white;
+            position: relative;
+        }
+
+        .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5); }
+
+        .btn-videos {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+            display: block;
+            text-decoration: none;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .btn-videos:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5); }
+
+        .stage-list-container {
+            margin-top: 25px;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #1e293b;
+        }
+
+        .stage-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #050810;
+            border: 1px solid #1e293b;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-item.unlocked {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.05);
+        }
+        
+        .stage-item.current {
+            border-color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.1);
+            box-shadow: inset 0 0 10px rgba(236, 72, 153, 0.2);
+        }
+        
+        .stage-item.current::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
+            background: var(--accent-pink);
+        }
+
+        .stage-item.locked {
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+
+        .stage-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .unlocked .stage-icon { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+        .current .stage-icon { background: var(--accent-pink); color: #fff; box-shadow: 0 0 10px var(--accent-pink); }
+        .locked .stage-icon { background: #1e293b; color: #475569; border: 1px solid #334155; }
+
+        .dev-info {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid #1e293b;
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #050810;
+        }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); z-index: 90; display: none; backdrop-filter: blur(4px);
+        }
+        .overlay.active { display: block; }
+
+        /* --- Logo (real artwork already has its own neon ring baked in,
+               so we just give it one soft ambient glow instead of a
+               second competing ring) --- */
+        .css-logo-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            border-radius: 50%;
+            animation: pulse-glow 3s infinite;
+            z-index: 10;
+        }
+
+        .css-logo-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .css-logo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: relative;
+            z-index: 3;
+        }
+
+        .small-logo-wrapper { width: 50px; height: 50px; padding: 2px; }
+        .small-logo-wrapper .css-logo-inner::before { font-size: 1.5rem; letter-spacing: -1px; }
+
+        /* --- UI Elements --- */
+        .btn-option {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            transition: all 0.2s ease;
+            text-align: right;
+            padding: 1.25rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            color: #cbd5e1;
+        }
+        
+        .btn-option:hover, .btn-option:active {
+            border-color: #475569;
+            background: #1e293b;
+            transform: translateY(-2px);
+        }
+
+        .correct {
+            background: #064e3b !important;
+            border-color: #10b981 !important;
+            color: #fff !important;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3) !important;
+        }
+
+        .wrong {
+            background: #7f1d1d !important;
+            border-color: #ef4444 !important;
+            color: #fff !important;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* --- Progress & Status --- */
+        .stage-bar-container {
+            background: #050810;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+            border: 1px solid #1e293b;
+        }
+        
+        .stage-progress { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .transformation-text {
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+        }
+
+        /* Stage Color Themes */
+        .form-base .stage-progress { background: linear-gradient(90deg, #64748b, #cbd5e1); }
+        .form-base .stage-title { color: #cbd5e1; }
+
+        .form-ssj .stage-progress { background: linear-gradient(90deg, #d97706, #fbbf24); }
+        .form-ssj .stage-title { color: var(--accent-gold); text-shadow: 0 0 15px rgba(251,191,36,0.4); }
+        
+        .form-rose .stage-progress { background: linear-gradient(90deg, #be185d, #ec4899); }
+        .form-rose .stage-title { color: var(--accent-pink); text-shadow: 0 0 15px rgba(236,72,153,0.4); }
+
+        .form-ui .stage-progress { background: linear-gradient(90deg, #475569, #f8fafc); }
+        .form-ui .stage-title { color: #f8fafc; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+
+        .form-ultimate .stage-progress { background: linear-gradient(90deg, #e5e7eb, #8b5cf6, #ec4899); }
+        .form-ultimate .stage-title { background: linear-gradient(90deg, #e5e7eb, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(139,92,246,0.6)); }
+        .form-ultimate .css-logo-wrapper { animation: pulse-glow 1.6s infinite; }
+
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none; z-index: 50; opacity: 0.1;
+        }
+
+        .question-box {
+            background: #0a0f1c;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .question-box::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .option-number {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            transition: all 0.2s ease;
+        }
+        .btn-option:hover .option-number { background: #334155; color: #f8fafc; }
+        .correct .option-number { background: #047857; color: #fff; border-color: #10b981; }
+        .wrong .option-number { background: #991b1b; color: #fff; border-color: #ef4444; }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative form-base bg-base" id="app-body">
+    <canvas id="aura-canvas"></canvas>
+    
+    <div class="scanlines"></div>
+
+    <!-- Sidebar System -->
+    <div id="sidebar-overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="text-xl font-black text-cyan-400 flex items-center gap-2">
+                <i class="fa-solid fa-capsules"></i> نظام الكبسولة
+            </h2>
+            <button onclick="toggleSidebar()" class="text-gray-500 hover:text-white text-2xl focus:outline-none transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-content flex flex-col h-full">
+            <a href="https://youtube.com/@beast_shado_db?si=aAFpCZsmTi4ZnUz5" target="_blank" class="btn-vip">
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-star text-yellow-300"></i>
+                    <span class="font-black text-lg leading-normal">انضم لجيش شادو (VIP)</span>
+                </div>
+                <div class="text-[11px] text-blue-100 opacity-90 mt-2 leading-relaxed">ادعم القناة واحصل على مزايا حصرية</div>
+                <div class="text-sm font-bold text-yellow-300 mt-1 drop-shadow-md leading-relaxed">(اشتراك شهر مجاناً)</div>
+            </a>
+
+            <a href="https://youtube.com/@beast_shado_db?si=aAFpCZsmTi4ZnUz5" target="_blank" class="btn-videos">
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-youtube text-2xl"></i>
+                    <span class="font-black text-lg">راجع الملاحم والفيديوهات</span>
+                </div>
+            </a>
+
+            <!-- Stages List -->
+            <div class="stage-list-container flex-grow">
+                <h3 class="text-sm font-bold text-slate-400 mb-3 border-b border-slate-700 pb-2">مسار التحولات</h3>
+                <div id="transformations-list">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Display Settings -->
+            <div class="settings-block mt-4">
+                <h3 class="text-sm font-bold text-slate-400 mb-3 border-b border-slate-700 pb-2">إعدادات العرض</h3>
+
+                <button onclick="toggleFullscreenMode()" class="settings-row">
+                    <i class="fa-solid fa-expand text-slate-300 text-lg"></i>
+                    <span class="font-bold text-slate-200">وضع ملء الشاشة</span>
+                </button>
+
+            </div>
+
+            <!-- Dev Info -->
+            <div class="dev-info mt-4 rounded-xl">
+                <h4 class="text-xs text-slate-500 mb-2 border-b border-slate-700 pb-1 font-bold">معلومات النظام</h4>
+                <div class="flex justify-between mb-1"><span>الإصدار:</span> <span class="text-cyan-500 font-mono">LEGENDS 6.0</span></div>
+                <div class="flex justify-between mb-1"><span>الحالة:</span> <span class="text-green-500 font-bold">قوة مطلقة</span></div>
+                <div class="flex justify-between font-black text-white pt-2 border-t border-slate-800 mt-2">
+                    <span>المطور:</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">BEAST SHADO</span>
+                </div>
+                <div class="text-center text-[10px] text-slate-600 mt-3 font-mono">© جميع الحقوق محفوظة</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="flex-1 flex flex-col items-center justify-center p-6 z-10 relative">
+        <button onclick="toggleSidebar()" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-white focus:outline-none z-20 p-2">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="css-logo-wrapper mb-6">
+            <div class="css-logo-inner"><img class="bs-logo-img" alt="BEAST SHADO"></div>
+        </div>
+        
+        <h1 class="text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 mb-2 text-center drop-shadow-2xl tracking-tighter max-w-full px-2 break-words">
+            BEAST SHADO
+        </h1>
+        <p class="text-xl md:text-2xl font-bold text-slate-300 mb-8 text-center tracking-wide">
+            مسار التطور المطلق
+        </p>
+
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-700/50 w-full max-w-md mb-8 text-right backdrop-blur-md">
+            <h3 class="text-lg font-black text-yellow-500 mb-3 border-b border-slate-700/50 pb-2">قوانين البقاء:</h3>
+            <ul class="text-sm text-slate-300 space-y-3">
+                <li class="flex items-start gap-2"><span class="text-blue-400 font-bold shrink-0">1. التفاصيل:</span> <span>الأسئلة دقيقة جداً ومستوحاة من أدق تفاصيل الملاحم.</span></li>
+                <li class="flex items-start gap-2"><span class="text-pink-400 font-bold shrink-0">2. العشوائية:</span> <span>ترتيب الأسئلة والإجابات يتغير في كل مرة تلعب فيها.</span></li>
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold shrink-0">3. الخطر (Hardcore):</span> <span>خطأ واحد يعيدك لبداية <span class="underline decoration-red-500 underline-offset-2">المرحلة الحالية</span>.</span></li>
+                <li class="flex items-start gap-2"><span class="text-purple-400 font-bold shrink-0">4. الهدف:</span> <span>تخطي الـ 5 مراحل للوصول لتحول "غوجيتا المطلق".</span></li>
+            </ul>
+        </div>
+
+        <button id="start-btn" onclick="initGame()" class="w-full max-w-xs py-4 bg-gradient-to-r from-pink-600 to-purple-700 hover:from-pink-500 hover:to-purple-600 text-white font-black text-2xl rounded-2xl shadow-[0_0_30px_rgba(236,72,153,0.3)] transition-all transform hover:scale-105 active:scale-95 border-b-4 border-purple-900">
+            ابدأ التحدي 🔥
+        </button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="hidden flex-1 flex flex-col p-4 md:p-6 max-w-2xl mx-auto w-full z-10 h-full">
+        
+        <div class="flex justify-between items-start mb-6 relative">
+            <button onclick="toggleSidebar()" class="text-2xl text-slate-400 hover:text-white focus:outline-none z-20 mt-1">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            
+            <div class="flex flex-col items-center flex-1 absolute left-1/2 -translate-x-1/2">
+                <div class="css-logo-wrapper small-logo-wrapper mb-1">
+                    <div class="css-logo-inner"><img class="bs-logo-img" alt="BEAST SHADO"></div>
+                </div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">الهيئة الحالية</div>
+                <div id="stage-name" class="stage-title font-black text-lg md:text-xl transformation-text whitespace-nowrap">BASE FORM</div>
+            </div>
+            
+            <div class="text-left mt-1">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">الطاقة</div>
+                <div id="score-display" class="text-xl font-black text-white font-mono drop-shadow-md">0</div>
+            </div>
+        </div>
+
+        <div class="mb-6 mt-8">
+            <div class="flex justify-between text-xs font-bold text-slate-400 mb-2 px-1">
+                <span id="question-counter">سؤال 1</span>
+                <span>اكتساب الطاقه</span>
+            </div>
+            <div class="w-full h-2 rounded-full stage-bar-container overflow-hidden">
+                <div id="power-bar" class="h-full stage-progress w-0 relative">
+                    <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-box rounded-2xl p-5 md:p-6 mb-6 flex-shrink-0 min-h-[140px] flex items-center justify-center">
+            <h2 id="question-text" class="text-base md:text-lg font-bold text-center leading-relaxed text-slate-200">
+                جاري التحميل...
+            </h2>
+        </div>
+
+        <div id="options-container" class="flex flex-col gap-3 flex-1 pb-4">
+            <!-- Generated via JS -->
+        </div>
+    </div>
+
+    <!-- Stage Transition Screen -->
+    <div id="transition-screen" class="hidden absolute inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-6 backdrop-blur-md text-center">
+        <div id="transition-icon" class="text-6xl mb-6 filter drop-shadow-lg">✨</div>
+        <h2 id="transition-title" class="text-3xl md:text-5xl font-black mb-4 text-white drop-shadow-lg leading-tight"></h2>
+        <p id="transition-msg" class="text-base md:text-lg text-slate-300 mb-8 max-w-md leading-relaxed"></p>
+        
+        <button id="transition-btn" onclick="nextAction()" class="w-full max-w-xs px-8 py-4 bg-slate-800 text-white font-black text-xl rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 border-b-4 border-slate-700">
+            متابعة
+        </button>
+    </div>
+
+    <!-- Final Victory Screen -->
+    <div id="victory-screen" class="hidden absolute inset-0 bg-[#050505] z-50 flex flex-col items-center justify-center p-6 form-ultimate">
+        <div class="css-logo-wrapper w-32 h-32 mb-6">
+            <div class="css-logo-inner"><img class="bs-logo-img" alt="BEAST SHADO"></div>
+        </div>
+        <div class="text-sm text-slate-400 font-bold uppercase tracking-widest mb-1 text-center">التحول النهائي</div>
+        <h2 class="text-4xl md:text-6xl font-black mb-4 stage-title uppercase tracking-tighter text-center">GOGETA ABSOLUTE</h2>
+        <p class="text-lg text-slate-300 font-bold mb-8 text-center max-w-md">لقد ختمت الوجود يا أسطورة.. أثبت أنك من نخبة جيش شادو!</p>
+        
+        <div class="bg-black/50 p-6 rounded-2xl border border-purple-500/30 mb-8 w-full max-w-sm text-center shadow-[0_0_30px_rgba(139,92,246,0.15)]">
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">الطاقة النهائية المسجلة</p>
+            <p id="final-score" class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-purple-400 to-pink-500 font-mono mb-2">0</p>
+        </div>
+
+        <button onclick="location.reload()" class="w-full max-w-sm py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-lg rounded-xl shadow-lg transform transition hover:scale-105 active:scale-95 mb-4 border-b-4 border-purple-900">
+            إعادة التدريب 🔄
+        </button>
+        <a href="https://youtube.com/@beast_shado_db" target="_blank" class="block w-full max-w-sm py-3 text-center bg-slate-800 text-slate-300 font-bold rounded-xl hover:text-white transition hover:bg-slate-700">
+            العودة للقناة
+        </a>
+    </div>
+
+    <script>
+        // --- 1. GAME DATA (Deep Lore, Hardcore Details) ---
+        // Setting 15 questions per stage for a total of 75 questions per run (pulled from a larger pool if expanded)
+        const Q_PER_STAGE = 15; 
+
+        const stagesData = [
+            {
+                id: 'base', name: 'BASE FORM', class: 'form-base', bgClass: 'bg-base', pointsMultiplier: 10,
+                questions: [
+                    { q: "في ملحمة المافوبا، كيف حطم زاماسو جرة الختم الفخارية قبل أن يتم ابتلاعه بالكامل؟", options: ["بإطلاق كرة طاقة حمراء ومركزه جداً في اللحظة الأخيرة", "باستخدام شعاع ليزر من عينه لثقب الجرة من الداخل", "بإنشاء سيف طاقة وقطع الجرة من المنتصف", "عن طريق ضغط طاقته الكامنة وتفجير الجرة"], a: 0 },
+                    { q: "ماذا حدث عندما فشلت المافوبا وفقد زاماسو جسده المادي بالكامل؟", options: ["اندمج مع الكون نفسه وأصبحت السماء تمتلئ بوجوهه", "تلاشى في العدم تاركاً وراءه طاقة سوداء", "استدعى زينو المستقبلي لإنقاذه من التلاشي", "خلق نُسخاً ظلية صغيرة تهاجمهم من كل مكان"], a: 0 },
+                    { q: "كيف رد غوهانكس على محاولة زاماسو (وهو مندمج مع الكون) لابتلاعه بفم ضخم من الغيوم؟", options: ["أطفأ هالته الذهبيه وعاد لهيئته العاديه وسمح له بابتلاعه", "أطلق كاميهاميها مزدوجة مزقت الفم العملاق", "استخدم الانتقال الآني للهروب خارج الكوكب", "استخدم حاجز طاقة قوي ليمنع الفم من الانغلاق"], a: 0 },
+                    { q: "ما هو الهجوم الذي استخدمه غوهانكس من داخل كيان زاماسو لتمزيقه وتدميره؟", options: ["فاينال اكسبلوجن ويف (موجة الانفجار النهائي)", "سوبر كاميهاميها مشحونه بكل طاقته", "ضربة السيف القاطع الخاص بترانكس", "طاقة الهاكاي التي تعلمها من بيروس"], a: 0 },
+                    { q: "من الذي التقط غوهان وترانكس وهما يسقطان فاقدي الوعي بعد الانفجار الذي دمر زاماسو الكوني؟", options: ["ماي (محاربة المقاومة)", "بولما من الماضي", "غوكو وفيجيتا بعد وصولهما", "الكايوشين شين"], a: 0 },
+                    { q: "في ملحمة غوهان الهائج، عندما حاول الكيان الشرير إنهاء حياة بيكولو المصاب، من الذي أوقفه؟", options: ["غوكو بالغريزة وفيجيتا بالغرور أوقفا هجومه معاً", "غوهان بعد تحوله لهيئة الوحش (البيست) فجأة", "بيروس ظهر فجأة واستخدم الهاكاي لردع الكيان", "كيفلا تدخلت بشعاع ليزر من مسافة بعيدة"], a: 0 },
+                    { q: "كيف تلاحم غوهان بيست لأول مرة مع الكيان الشرير في قتالهم المباشر؟", options: ["تتشابك أيديهما في المنتصف وتنهار الأرض وتتحول لحمم بركانية", "يوجه غوهان ركلة سريعة تطير بالكيان خارج الغلاف الجوي", "يستخدم غوهان تقنية الوهم ليخدع الكيان ويضربه من الخلف", "يتبادلان إطلاق الكي من مسافة بعيدة لتدمير المكان"], a: 0 },
+                    { q: "ماذا قال فيجيتا (بالغرور الفائق) للكيان الشرير وهو يوجه له ضربة مطرقة ساحقة؟", options: ["أين تنظر أيها الوغد؟", "هذه هي قوة الكبرياء الحقيقية!", "لن أسمح لك بالعبث معنا!", "سأسحقك حتى لا يتبقى منك شيء!"], a: 0 },
+                    { q: "كيف رد الكيان الشرير على الهجوم المشترك (الغريزة، الغرور، البيست) الذي أسقطه أرضاً؟", options: ["فجر طاقة سوداء في كل الاتجاهات لإبعادهم عنه", "استخدم الانتقال الآني للهروب من ساحة المعركة", "قام بصنع نُسخ ظلية تهاجمهم لتشتيت انتباههم", "امتص طاقتهم ليعيد بناء جسده المحطم"], a: 0 },
+                    { q: "عندما أطلق الثلاثة (غوكو، فيجيتا، غوهان) شعاعاً جباراً واحداً، كيف واجهه الكيان الشرير؟", options: ["جمع كرة ظلام عملاقة لصد الهجوم المشترك", "شكل درعاً أسود مضغوطاً حول جسده بالكامل", "تلاشى في الدخان ليتجنب الاصطدام المباشر", "رد بشعاع أحمر مركز لاختراق هجومهم"], a: 0 },
+                    { q: "ماذا قال بيروس عن محاولة دمج الغريزة الفائقة والغرور الفائق في جسد واحد؟", options: ["إنهما متضادتان ومحاولة دمجهما دون توازن تخلق تنافراً وجودياً يمزق الجسد", "هي الطريقة الوحيدة للوصول إلى طاقة تتجاوز حكام الدمار وتصل للملائكة", "اندماج مستحيل لأن كبرياء فيجيتا سيرفض التناغم مع هدوء غوكو", "ينتج عنه طاقة هائلة لكنها تستهلك الجسد في ثوانٍ معدودة"], a: 0 },
+                    { q: "في ملحمة عودة غوكو بلاك، من هو المقاتل الذي تم اختياره للمشاركة بدلاً من فريزا بأمر من زينو؟", options: ["غوكو بلاك", "برولي", "مورو", "غرانولا"], a: 0 },
+                    { q: "كيف تعامل جيرين مع منجل غوكو بلاك في بداية قتالهم في بطولة الأكوان؟", options: ["أوقف المنجل بإصبع واحد وسحق بلاك بضربات كادت تمحوه", "راوغه بسرعته القصوى وكسر المنجل بلكمة واحدة", "استخدم درعاً أحمر لصد المنجل ثم أطاح ببلاك بعيداً", "سمح للمنجل بخدشه ليزيد من غضبه وقوته"], a: 0 },
+                    { q: "ما هي النتيجة المرعبة لاندماج خلايا السايان مع خلود زاماسو بعد أن كاد جيرين أن يمحوه؟", options: ["تحول شعره للأبيض الناصع وصدرت منه هالة مقدسة وهدوء مرعب", "تحول إلى وحش عملاق مشوه بطاقة سوداء تدمر كل شيء", "انقسم إلى نسختين، إحداهما خالدة والأخرى تمتلك قوة التدمير", "فقد خلوده لكنه اكتسب سرعة تفوق سرعة الملائكة"], a: 0 },
+                    { q: "بماذا وصف غوكو بلاك (بالتحول الأبيض) طاقته الجديدة أمام محاربي الكون السابع؟", options: ["يشعر وكأن الكون كله قد أصبح جزءاً من جسده وتخلص من ضعف الفاني", "أنها طاقة حكام دمار متطورة لا يمكن لأي فاني تحملها", "أنها طاقة ملائكة ملوثة بغضب السايان الخالص", "أنها القوة التي ستجعله الحاكم الأوحد بدلاً من زينو"], a: 0 }
+                ]
+            },
+            {
+                id: 'ssj', name: 'SUPER SAIYAN', class: 'form-ssj', bgClass: 'bg-ssj', pointsMultiplier: 20,
+                questions: [
+                    { q: "كيف رد ديسبو عندما واجه غوكو بلاك بالتحول الأبيض لأول مرة؟", options: ["انطلق بأقصى سرعته للغدر ببلاك من الخلف", "تراجع بخوف وطلب مساعدة توبو وجيرين", "أطلق سلسلة من كرات الطاقة السريعة لتشتيته", "تسمر في مكانه من الرعب ولم يستطع الحراك"], a: 0 },
+                    { q: "ماذا حدث عندما أطلق توبو كرة دمار (هاكاي) بحجم الشمس نحو غوكو بلاك الأبيض؟", options: ["أمسكها بلاك بكفه العارية وحولها لغبار كأنها كرة ثلج", "تفاداها بلاك بسرعة تفوق الضوء لتدمر جزءاً من الحلبة", "عكس بلاك مسارها لتصيب توبو وتخرجه من الحلبة", "امتص بلاك طاقتها ليزيد من هالة الخلود الخاصة به"], a: 0 },
+                    { q: "كيف تعامل غوكو بلاك مع جيرين بعد أن أسقط توبو وديسبو؟", options: ["ظهر خلفه، همس في أذنه أن قوته فارغة، وكسر كتفه ببطء", "أطلق عليه مطر الإعدام ليقيده في مكانه", "استخدم منجله لفتح شق زمني وسجن جيرين داخله", "تجاهله تماماً ووجه هجومه نحو غوكو وفيجيتا مباشرة"], a: 0 },
+                    { q: "من الذي أنقذ غوكو وفيجيتا من هجوم بلاك الأول بعد أن استهدف الكون السابع؟", options: ["كيفلا، حيث أطلقت شعاعاً لولبياً أخضر وأحمر لحرف مسار طاقة بلاك", "غوهان، حيث استخدم حاجز طاقة لحمايتهم في اللحظة الأخيرة", "هيت، حيث أوقف الزمن لثوانٍ لينقلهم بعيداً عن الهجوم", "المعلم روشي، باستخدام المافوبا لصد كرة الطاقة"], a: 0 },
+                    { q: "بماذا وصفت كيفلا هجومها على غوكو بلاك؟", options: ["أنها تريد أن تكون من يمسح به بلاط الحلبة قبل أن تهزم غوكو وفيجيتا", "أنها ستمحوه بقوة السوبر سايان 2 الأسطوري", "أنها ستثبت للجميع أن الكون السادس هو الأقوى", "أنها ستنتقم لما فعله بجيرين ومقاتلي الكون الحادي عشر"], a: 0 },
+                    { q: "كيف وصف غوكو بلاك تحول غوكو وفيجيتا للسوبر سايان بلو؟", options: ["أنه مجرد قشرة زرقاء تخفي ضعفهم", "أنه لون جميل لكنه لا يقارن بقداسة تحوله الأبيض", "أنه طاقة فانية لا تستطيع خدش جسد خالد", "أنه محاولة يائسة لتقليد طاقة الحكام"], a: 0 },
+                    { q: "ماذا كانت نتيجة هجوم (الكاميهاميها والفاينال فلاش) المشترك من غوكو وفيجيتا على بلاك؟", options: ["أحاط بلاك نفسه بحاجز شفاف لم يُخدش وابتسم بسخرية", "تضرر ملابس بلاك قليلاً لكن جسده شفي فوراً", "استخدم بلاك الانتقال الآني ليتفادى الانفجار الهائل", "تمكن الهجوم من دفع بلاك للخلف لكنه لم يسبب ضرراً حقيقياً"], a: 0 },
+                    { q: "ماذا فعل بلاك بفيجيتا بعد أن أحبط هجومهما المشترك؟", options: ["غرس نصل طاقة أرجواني في درع فيجيتا", "أمسكه من رقبته ورماه خارج الحلبة", "أطلق عليه شعاع ليزر من مسافة صفر", "حطم ذراعه بضربة واحدة وكسر كبريائه"], a: 0 },
+                    { q: "كيف وصف الدايشنكان النسخ التي خلقها غوكو بلاك من الصدع الأرجواني؟", options: ["نسخ هشة وقوتها مقسمة لأنه لم يسيطر على دمجه بالكامل بعد", "نسخ خالدة لا يمكن تدميرها إلا بطاقة الهاكاي", "نسخ تستهلك طاقة الفراغ لتتجدد بلا توقف", "وهم يخدع العقول ولا يمتلك طاقة هجومية حقيقية"], a: 0 },
+                    { q: "كيف تخلص هيت من النسخ التي حاصرته؟", options: ["تجمّدت النسخ فجأة وظهرت فجوات في صدورها وتبخرت في صمت", "استخدم قفزة الزمن ليضربها كلها في جزء من الثانية", "سجنها في بعد زمني مختلف لتتلاشى", "تفاداها ببراعة وتركها تضرب بعضها البعض"], a: 0 },
+                    { q: "ماذا فعل غوكو بلاك عندما رأى أن النسخ لم تقضِ على محاربي الكون السابع؟", options: ["طقطق أصابعه لتتبخر جميع النسخ وقرر قتالهم بنفسه", "صنع صدعاً آخر ليخرج وحوشاً أكثر قوة", "غضب وأطلق مطر الإعدام على جميع من في الحلبة", "تراجع للخلف واستخدم النسخ كدرع بشري"], a: 0 },
+                    { q: "كيف تعامل بلاك مع الهجوم الشامل من (غوهان، بيكولو، 17، 18، كوريرين، تينشيهان، روشي)؟", options: ["بحركة دائرية بسيطة أطاح بهم جميعاً خارج الحلبة بضربة واحدة", "استخدم درعاً أسود لصد هجومهم ثم قذفهم بعيداً", "أطلق شعاع كي واسع النطاق محاهم من ساحة المعركة", "انتقل آنياً خلفهم وأسقطهم واحداً تلو الآخر في ثوانٍ"], a: 0 },
+                    { q: "ماذا حدث لهجوم كيفلا (الليزر النهائي واللكمة المشحونة) ضد بلاك؟", options: ["أمسك وجهها بيده الكبيرة ووجه لكمة مظلمة في معدتها فككت اندماجها", "تفادى اللكمة بسهولة ورد بضربة سيف طاقة قطعت أقراطها", "استخدم الانتقال الآني وتركها تضرب الأرض لتؤذي نفسها", "صد اللكمة بدرعه الشفاف وأطاح بها بموجة صدمة قوية"], a: 0 },
+                    { q: "في قصة غوهان الهائج، كيف حاول الكيان الشرير تحطيم تركيز غوكو (الغريزة)؟", options: ["همس له أن غريزته مجرد قوقعة فارغة للهروب من ألم الفقد", "ذكّره بفشله في حماية الأرض عدة مرات", "أخبره أن الغريزة تستهلك طاقته وسيموت قريباً", "قال له أن فيجيتا يكرهه وسيخونه في المعركة"], a: 0 },
+                    { q: "بماذا وصف الكيان الشرير تحول فيجيتا (الغرور الفائق) لكسر عزيمته؟", options: ["قال إن غروره ستار يخفي عقدة نقصه وأنه يعاقب نفسه لكونه الثاني", "أخبره أن طاقة الدمار لا تليق به بل تليق فقط بالحكام", "ضحك على استنزافه لطاقته بلا فائده أمام خلوده", "وصفه بأنه محارب همجي لا يعرف سوى التدمير العشوائي"], a: 0 }
+                ]
+            },
+            {
+                id: 'rose', name: 'SSR BLACK', class: 'form-rose', bgClass: 'bg-rose', pointsMultiplier: 30,
+                questions: [
+                    { q: "عندما داس بلاك على صدر فيجيتا المفتوح وفرك قدمه في الجرح، ماذا كان رد فعل فيجيتا؟", options: ["ضغط على جرحه بنفسه ليخرج المزيد من الدم وهو يضحك مطالباً بالمزيد", "أطلق صرخة ألم هزت أرجاء الحلبة ولكنه رفض الاستسلام", "أطلق شعاع طاقة من فمه نحو وجه بلاك مباشرة", "فقد وعيه لثوانٍ معدودة قبل أن ينقذه غوكو"], a: 0 },
+                    { q: "كيف تغير شكل فيجيتا بعد أن استمد القوة من الألم تحت قدم بلاك؟", options: ["انفجر بعمود لهب بنفسجي وتحول لشيطان هارب من الجحيم يضحك للألم", "توهجت هالته باللونين الأزرق والبنفسجي معاً واكتسب سرعة هائلة", "فقد السيطرة على تحوله وعاد لشكله العادي لكن بقوة تدميرية أكبر", "تشكل درع من طاقة الهاكاي حول جسده لصد أي هجوم"], a: 0 },
+                    { q: "كيف تفادى غوكو (الغريزة) شعاع الليزر الذي أطلقه بلاك نحو رأسه؟", options: ["بميل بسيط للرأس بملامح ميتة تماماً فمر الشعاع بجوار أذنه", "بانتقال آني خاطف ليظهر خلف بلاك", "بصد الشعاع بظهر يده المشبعة بطاقة الغريزة", "بإنشاء أفاتار الغريزة العملاق ليتلقى الضربة بدلاً منه"], a: 0 },
+                    { q: "كيف وصف غوكو وفيجيتا نفسيهما أمام بلاك بعد أن أظهرا الغريزة والغرور معاً؟", options: ["وحش يضحك للموت وآخر بلا مشاعر.. نحن كوابيسك التي تجسدت", "الماء الذي يطفئ نيرانك والنار التي تحرق خلودك", "قوة السايان المطلقة التي ستسحق كبريائك الكاذب", "محاربو الكون السابع الذين لا يعرفون الاستسلام أبداً"], a: 0 },
+                    { q: "كيف كان التنسيق بين غوكو وفيجيتا في هجومهما المشترك على بلاك؟", options: ["غوكو يهاجم النقاط العمياء التي يخلقها عنف فيجيتا الذي يمتص الهجمات", "يتبادلان الضربات بسرعة بحيث لا يستطيع بلاك التركيز على أحدهما", "فيجيتا يطلق الكي من بعيد بينما غوكو يلتحم معه قتالاً باليد", "يهاجمان في نفس اللحظة ونفس الاتجاه لمضاعفة قوة الضربة"], a: 0 },
+                    { q: "ماذا حدث عندما وجه غوكو (الغريزة) ركلة فضية لدفع بلاك داخل هجوم فيجيتا المدمر؟", options: ["الضربة أصابته مباشرة وابتلعه الانفجار، لكنه خرج بملابس ممزقة وخدوش فقط", "تمكن بلاك من صد الركلة واستخدمها للهروب من الانفجار", "تفتت جسد بلاك بالكامل لكنه تجدد فوراً من الدخان الأسود", "أحدث الهجوم صدعاً في جسد بلاك ولكنه شفي بفضل خلوده"], a: 0 },
+                    { q: "بماذا برر بلاك عدم تضرره من أقوى هجمات غوكو وفيجيتا؟", options: ["قال إنهم يحرقون حياتهم لقوة لحظية، بينما هو الأبدية نفسها", "أنه يمتص طاقة هجماتهم ليزيد من قوة تحوله الأبيض", "أن درعه الكوني لا يمكن اختراقه بطاقة الفانين", "أنه يستخدم الزمن لعكس أي ضرر يلحق بجسده"], a: 0 },
+                    { q: "كيف نفذ بلاك هجومه (مطر الإعدام النهائي)؟", options: ["طعن يده بنصل الكي، فطفى دمه في الهواء وتحول لآلاف الإبر القرمزية المشعة", "جمع غيوم سوداء في السماء وأسقط منها كرات طاقة كالمطر", "استخدم منجله لشق الفضاء واستدعاء رماح طاقة ارجوانية", "ضرب الأرض بقوة لتتطاير شظايا الصخور وتتحول لمقذوفات حادة"], a: 0 },
+                    { q: "كيف أنقذ هيت كالي وكاليفلا من مطر الإعدام؟", options: ["وجه موجة صدمة زمنية لهما وأعادهما بالزمن للخلف ليطيح بهما للمدرجات", "أنشأ سجن زمن حولهما ليحميهما من الإبر القاتلة", "انتقل بهما آنياً لجهة أخرى من الحلبة رغم إصابته", "استخدم تقنية التخفي ليجعلهما غير مرئيتين للابر"], a: 0 },
+                    { q: "ماذا فعل بلاك عندما حاول هيت سجنه في (سجن الزمن - التجميد الأبدي)؟", options: ["التهمت هالته السوداء الزمن نفسه وشقق الفضاء الرمادي", "كسر السجن بضربة سيف طاقة مشحونة بالخلود", "استخدم الانتقال الآني ليهرب قبل أن يكتمل السجن", "انتظر حتى نفدت طاقة هيت وتلاشى السجن من تلقاء نفسه"], a: 0 },
+                    { q: "ماذا طلب فيجيتا من غوكو كشرط وحيد لتنفيذ الاندماج (الرقصة) ضد بلاك؟", options: ["الخطوات يجب أن تكون مرآة دقيقة وإلا سيتحولان لمسخ ضعيف يموت بلمسة", "أن يقود فيجيتا الاندماج ويتحكم في جسد غوجيتا", "أن يتخلى غوكو عن الغريزة الفائقة ليتوافق مع الغرور", "أن يستخدما أقراط البوتارا بدلاً من الرقصة لأنها أسرع"], a: 0 },
+                    { q: "ماذا كانت النتيجة الأولى لمحاولة اندماج غوكو (الغريزة) وفيجيتا (الغرور) في الحلبة؟", options: ["تحولا لمسخ مشوه نصف شعره فضي ونصفه بنفسجي، وبدآ يتدمران من الداخل", "فشل الاندماج تماماً وتم الإطاحة بهما بسبب التنافر القوي", "ظهر غوجيتا ولكنه كان يمتلك طاقة الغريزة فقط وفقد الغرور", "انفجر جسداهما وظهر ضوء ساطع أعمى جميع من في الحلبة"], a: 0 },
+                    { q: "في قصة غوهان الهائج، عندما دخل غوهان لـ (فراغ عقله الباطن)، ماذا كان شكل الكيان الشرير هناك؟", options: ["ظل عملاق عيناه حمراوتان تلمعان في الظلام", "نسخة مطابقة لغوهان ولكن بملامح شيطانية", "ثقب أسود يبتلع ذكريات غوهان السعيدة", "وحش هائج بلا ملامح يصرخ باستمرار"], a: 0 },
+                    { q: "بماذا حاول الكيان الشرير إقناع غوهان داخل عقله ليجعله يستسلم؟", options: ["أنه الوحش الحقيقي الذي تسبب في موت أحبائه بسبب تردده", "أنه لن يستطيع هزيمته مهما حاول لأن الظلام أقوى", "أنه إذا سلم جسده سيحميه من الألم ويجعله الأقوى في الكون", "أن حكام الدمار هم الأعداء الحقيقيون ويجب تدميرهم"], a: 0 },
+                    { q: "ما الذي أيقظ غوهان من استسلامه للظلام المطلق داخل عقله؟", options: ["أصوات عائلته وأصدقائه (تشي تشي، غوتين، ساتان، غوكو، فيجيتا) التي كونت دفئاً كسر الجليد الأسود", "رؤيته لغوكو وفيجيتا وهما يموتان في العالم الحقيقي", "غضبه الشديد من سخرية الكيان الشرير وتلاعبه بذكرياته", "طاقة بيكولو التي وصلت إليه من العالم الحقيقي"], a: 0 }
+                ]
+            },
+            {
+                id: 'ui_ue', name: 'UI & UE', class: 'form-ui', bgClass: 'bg-ui', pointsMultiplier: 40,
+                questions: [
+                    { q: "كيف تم حل التنافر الوجودي بين الغريزة والغرور داخل الفراغ الأسود للاندماج؟", options: ["خلقوا توازن الفوضى: غوكو كوعاء هادئ يوجه عاصفة فيجيتا المدمرة", "تدخل ويس لضبط طاقتيهما قبل أن يتمزق جسدهما", "تخلوا عن التحولات وعادوا لطبيعتهم ليكتمل الاندماج", "استخدموا طاقة الغضب المشتركة لتوحيد التحولين"], a: 0 },
+                    { q: "كيف كان لون شعر وهالة غوجيتا المطلق عند ظهوره أول مرة؟", options: ["شعر بلاتيني كوني (مزيج الفضي والبنفسجي) وعينان تتوهجان بنور أبيض بلا مشاعر", "شعر أبيض ناصع مع هالة بنفسجية تحيط به", "شعر ذهبي مشع تتخلله صواعق زرقاء وحمراء", "شعر أسود قاتم مع هالة تشبه الفضاء العميق"], a: 0 },
+                    { q: "ماذا فعل غوجيتا المطلق عندما اندفع بلاك نحوه محاولاً قطع عنقه بنصل الكي؟", options: ["توقف النصل قبل أن يلمس بشرته بمليمتر كأنه اصطدم بجدار من الكثافة المطلقة", "كسر النصل بيده العارية ببرود تام", "تفادى الضربة ووجه لكمة أسقطت بلاك أرضاً", "امتص طاقة النصل وحولها لصالحه"], a: 0 },
+                    { q: "كيف وصف غوجيتا المطلق هجوم بلاك الذي كاد أن يدمرهم أثناء الاندماج؟", options: ["قال إن الهجوم سحق القيود التي تمنعهم ودفعهم لحافة العدم ليولدوا من جديد", "أنه كان هجوماً ضعيفاً لم يؤثر فيهم بفضل قوة الاندماج", "أنه أيقظ طاقة الحكام النائمة بداخلهم", "أنه أجبرهم على التخلي عن الغريزة والغرور من أجل البقاء"], a: 0 },
+                    { q: "في معركتهما اليدوية، كيف كانت ردة فعل غوجيتا المطلق لضربات غوكو بلاك؟", options: ["لم يتراجع خطوة، تحرك بانسيابية وتفادى كل ضربة كأنه شبح، ثم أمسك معصمه بقوة", "تلقى الضربات بصدره دون أن يتأثر لإثبات تفوقه", "راوغ الضربات بصعوبة ورد بهجوم مضاد سريع", "استخدم درعاً من طاقة الغرور لصد الضربات وحرق يد بلاك"], a: 0 },
+                    { q: "لماذا لم تلتئم الجراح التي أحدثها غوجيتا في جسد بلاك الخالد؟", options: ["لأن ضربات الغرور الفائق كانت تمزق التكوين الروحي لزاماسو من الداخل وتحرقه", "لأن غوجيتا استخدم تقنية تمنع تجدد الخلايا الفانية", "لأن طاقة الغريزة الفائقة تفصل الجسد عن الروح", "لأن بلاك استنزف كل طاقته في الهجمات السابقة"], a: 0 },
+                    { q: "ماذا فعل غوكو بلاك عندما أدرك أن روحه تتمزق وجراحه لا تشفى؟", options: ["طعن نفسه بمنجله الوردي وفتح فجوة زمنية ليمتص طاقة الظلام والدمار منها", "استسلم وطلب من غوجيتا أن يمحوه بسرعة لينهي ألمه", "حاول الهرب من الحلبة للبحث عن طريقة لاستعادة خلوده", "أطلق كل طاقته في انفجار أخير لتدمير نفسه والجميع"], a: 0 },
+                    { q: "كيف واجه غوجيتا المطلق (كرة الدمار العملاقة) التي ألقاها بلاك بعد امتصاصه لطاقة الفجوة؟", options: ["أطلق كاميهاميها تدور كالمجرة نصفها فضي ونصفها بنفسجي", "تفاداها واستهدف بلاك مباشرة بضربة هاكاي مركزة", "استخدم الانتقال الآني لنقل الكره لقلب الفجوة الزمنية", "صدها بيديه العاريتين وفتتها بضغط الغرور الفائق"], a: 0 },
+                    { q: "بماذا أجاب غوجيتا عندما سخر بلاك من هشاشة أجساد الفانين تحت ضغط الكرة العملاقة؟", options: ["هشاشتنا هي ما تدفعنا لكسر حدودنا.. نحن نقاتل لنحمي من نعيش من أجلهم", "الخلود يجعلك ضعيفاً لأنك لا تعرف طعم الخوف", "جسد السايان يتطور مع كل ألم، وهذه الهشاشة هي مصدر قوتنا", "لن تفهم أبداً معنى القتال من أجل شيء أكبر منك"], a: 0 },
+                    { q: "ما هي الكلمة الوحيدة التي نطق بها غوجيتا لينهي وجود زاماسو (بلاك) للأبد؟", options: ["هاكاي (المحو الروحي المطلق)", "انتهى الأمر (تدمير الكي)", "وداعاً (مسح الوجود)", "تلاشى (الانفجار النهائي)"], a: 0 },
+                    { q: "ماذا حدث لجسد غوكو المسروق بعد أن محا غوجيتا روح زاماسو بالهاكاي؟", options: ["توهج بضوء ذهبي خافت ثم تفتت ببطء إلى ذرات نور عادت لزمنها الأصلي", "سقط على الأرض كجثة هامدة خالية من الحياة", "انفجر وتناثرت أشلاؤه في الفراغ الكوني", "بقي كما هو لكنه فقد كل طاقته وتحول لرماد"], a: 0 },
+                    { q: "في قصة غوهان يتخطى زينو، لماذا سقط المشرف الأسمى على ركبتيه برعب خالص؟", options: ["لأن القوانين القديمة للكيانات العليا لم تعد تنطبق على غوهان وسلطتهم انتزعت منه", "لأن غوهان هدده بمحو وجوده بضربة واحدة", "بسبب الضغط المهول لهالة غوهان الذي دمر قصر زينو", "لأنه أدرك أن زينو نفسه لا يستطيع إيقاف غوهان"], a: 0 },
+                    { q: "كيف تمكن غوهان من الوصول إلى 'فراغ العدم' المظلم؟", options: ["غرز أصابعه في الفراغ ومزق نسيج المكان والزمان بيديه العاريتين", "أجبر المشرف الأسمى على فتح بوابه العدم له", "استخدم سرعته القصوى لاختراق الابعاد الكونيه", "استدعى طاقة السايان الكامنة ليخلق ثقباً أسود"], a: 0 },
+                    { q: "من كان يمسك بـ بان داخل فراغ العدم عندما وصل غوهان؟", options: ["الساياجين الأول والأسطوري، وكان يلفها بدرعه لحمايتها من التلاشي", "الدايشنكان، وكان يستخدمها كرهينة لابتزاز غوهان", "كيان شيطاني قديم ابتلع العديد من الأكوان", "لم يكن هناك أحد، كانت تطفو وحيدة في الظلام"], a: 0 },
+                    { q: "كيف أوقف الساياجين الأول أقوى ضربة لغوهان (والتي مزقت نسيج الأكوان)؟", options: ["بإصبع واحد فقط من يده اليسرى", "بدرعه الأثري الذي امتص طاقة الهجوم بالكامل", "تفاداها بسرعه خياليه لم يدركها غوهان", "صدها بقبضته ونتج عن ذلك انفجار دمر الكويكبات المحيطه"], a: 0 }
+                ]
+            },
+            {
+                id: 'ultimate', name: 'GOGETA ABSOLUTE', class: 'form-ultimate', bgClass: 'bg-ultimate', pointsMultiplier: 50,
+                questions: [
+                    { q: "ماذا طلب الساياجين الأول من غوهان في فراغ العدم لكي يثبت أنه يستحق ابنته؟", options: ["أن يثبت جدارته ويظهر حقيقة الوحش القابع بداخله", "أن يهزمه في نزال عادل بدون استخدام طاقة البيست", "أن يعده بإعاده إحياء عرق الساياجين القديم", "أن يتخلى عن مشاعره ويقاتل كحاكم دمار حقيقي"], a: 0 },
+                    { q: "كيف اخترق غوهان دفاع الساياجين الأول المطلق بعد أن أطلق العنان لوحشه الداخلي؟", options: ["محا المسافة فيزيائياً ووجه قبضة اخترقت دفاعه وأطاحت به للخلف متسببة بتشقق درعه", "أطلق شعاعاً حلزونياً أحمر وأبيض اخترق درعه الأثري", "استخدم طاقة الغضب لزيادة سرعته وضربه من زاوية ميتة", "ركز كل طاقته في نقطة واحدة ليخترق الدرع كالرصاصة"], a: 0 },
+                    { q: "ماذا قال الساياجين الأول لغوهان بعد أن تلقى ضربته التي كسرت درعه؟", options: ["لقد حكمت العقل وأطلقت الوحش.. خذ صغيرتك يا ملك هذا الزمان", "قوتك تعتمد على الغضب الأعمى، لا تزال هجيناً ضعيفاً", "لن أسمح لك بالخروج من هنا حياً أبداً", "أنت تستحق أن تأخذ مكاني كحاكم لفراغ العدم"], a: 0 },
+                    { q: "ما هو القانون الجديد الذي فرضه غوهان على حكام الأكوان وزينو في النهاية؟", options: ["الحكام تحكم الأكوان وأنا أحكم الحكام.. سأمحو كلمة حاكم إذا نظرتم لعائلتي", "سأكون المشرف الأسمى الجديد، وقراراتي هي القوانين", "يمنع تدخل الحكام في شؤون الأرض أو عائلتي للأبد", "سأدمر أي كون يقترب من الأرض بأمر من زينو"], a: 0 },
+                    { q: "في قصة غوهان الهائج، كيف فسر الدايشنكان لزينو سبب عدم تدخلهم لإيقاف الكيان الشرير؟", options: ["لأن الكيان هو تجسيد لاضطراب غوهان، وتدخل طاقات خارجية سيكون كصب الوقود على النار", "لأن طاقة الكيان تتجاوز قدرة المحو الخاصة بزينو", "لأنها كانت فرصة لاختبار قوة غوهان ومدى استحقاقه للحياة", "لأن الكيان الشرير كان يعكس مشاعر الفانين ولا يهدد الحكام"], a: 0 },
+                    { q: "ماذا حدث في الأكوان عندما قام غوهان بتمزيق نسيج المكان والزمان للوصول لفراغ العدم؟", options: ["انطفأت نجوم في أكوان بعيدة وارتجفت المجرات خوفاً من سقوط الوجود", "تدخل حكام الدمار لمنع الكارثة لكنهم فشلوا", "انهارت الحلبه بالكامل وابتلع الفراغ معظم المقاتلين", "لم يحدث شيء مادي سوى صوت قوي يشبه انكسار الزجاج"], a: 0 },
+                    { q: "في قصة غوكو بلاك، كيف كانت نهاية الكون الحادي عشر في البطولة؟", options: ["سقط جيرين خارج الحلبة بعد أن اقتلعته عاصفة طاقة بلاك من مكانه", "محا زينو الكون الحادي عشر بعد هزيمة جيرين مباشرة", "استسلم جيرين لبلاك وتم إقصاؤه رسمياً", "دمر بلاك مدرجات الكون الحادي عشر بالكامل"], a: 0 },
+                    { q: "ماذا قال جيرين وهو جالس في المدرجات بعد رؤية غوجيتا يسحق غوكو بلاك؟", options: ["ابتسم ابتسامة خفيفة وقال: 'السايان.. أنتم حقاً كائنات لا تخضع للمنطق'", "بكى لأنه أدرك أنه لم يكن الأقوى في الأكوان", "غضب وطلب من زينو إعادة المعركة ليتحدى غوجيتا", "تجاهل الأمر واعتبر أن قوته لا تزال تتفوق عليهم"], a: 0 },
+                    { q: "بماذا اعترف بيروس متنهداً بعمق بعد انتصار غوجيتا المطلق؟", options: ["أنهما (غوكو وفيجيتا) يستحقان لقب أقوى المحاربين", "أن غوجيتا المطلق أقوى منه ومن جميع حكام الدمار", "أنه أخطأ حين لم يتدخل لمساعدتهم من البداية", "أنه كان يجب أن يمحو زاماسو منذ فترة طويلة"], a: 0 },
+                    { q: "كيف ختم الراوي قصة عودة غوكو بلاك لبطولة الأكوان؟", options: ["بأنهم فازوا بالشيء الذي عجز زاماسو عن فهمه: الروح البشرية التي لا تعرف الاستسلام", "بأن السايان سيظلون القوة المهيمنة على جميع الأكوان", "بأن العدالة المطلقة انتصرت أخيراً على الشر", "بأن حكام الدمار أدركوا خطأهم في الاعتماد على الفانين"], a: 0 },
+                    { q: "في قصة غوهان الهائج، ماذا كانت النتيجة المباشرة لدمج غوهان لـ (البيست) مع (هدوء الروح)؟", options: ["هالة هادئة كثيفة تشع دفئاً مرعباً يذيب طاقة الظلام من حوله", "انفجار هائل دمر الكيان الشرير في لحظتها", "تحول شعره للون الفضي بالكامل واكتسب سرعة لا تصدق", "اكتسب قدرة الشفاء الذاتي مثل الكيان الشرير"], a: 0 },
+                    { q: "كيف أنهى غوهان معركته ضد الكيان الشرير (ظله) في قصة غوهان الهائج؟", options: ["بإطلاق شعاع حلزوني (أبيض، أحمر، وفضي) اخترق شعاع الكيان وقسمه لنصفين", "استخدم هجوم (الفاينال فلاش) الخاص بفيجيتا لتبخيره", "ضربه بلكمة ساحقة دمرت نواة الظلام بداخله", "امتص الكيان الشرير ودمجه مع طاقته ليزداد قوة"], a: 0 },
+                    { q: "ماذا حدث لكرة الظلام العملاقة التي كان يحملها غوكو وفيجيتا بعد أن دمر غوهان الكيان الشرير؟", options: ["تلاشت الكرات السوداء العملاقة وكأنها لم تكن بمجرد تدمير الكيان", "انفجرت في السماء دون أن تسبب ضرراً للأرض", "امتصها غوهان لتجديد طاقة غوكو وفيجيتا", "سقطت ببطء وتحولت لرماد تناثر في الهواء"], a: 0 },
+                    { q: "ما هي الكلمة التي رددها الكيان الشرير لغوهان في عقله الباطن ليحطمه؟", options: ["أنت هو الوحش.. أنت من قتلتهم بسبب تردده", "لن تستطيع حمايتهم لأنك ضعيف وجبان", "طالما ترفضني سيموتون جميعاً مراراً وتكراراً", "سلمني جسدك وسأجعلك الحاكم الأقوى في الكون"], a: 0 },
+                    { q: "ما هو الشيء الذي كان يخشاه غوهان حقاً وأدركه في النهاية لمواجهة ظله؟", options: ["كان يخاف من غضبه فحاول كبته، وعندما ينفجر يسيطر عليه", "كان يخشى أن يصبح شريراً مثل الكيان المظلم", "كان يخاف ألا يكون قوياً بما يكفي لحماية الأرض", "كان يخشى أن يفقد إنسانيته ويتحول لمحارب بارد كالسياجين"], a: 0 }
+                ]
+            }
+        ];
+
+
+        // --- GAME STATE ---
+        let currentStageIndex = 0;
+        let currentQIndex = 0; 
+        let score = 0;
+        let stageStartScore = 0; // score value at the moment the current stage began
+        let activeQuestions = [];
+        let canAnswer = false;
+        let audioCtx = null;
+
+        // --- AUDIO SYSTEM (Lazy Load) ---
+        const sfx = {
+            init: () => {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) audioCtx = new AudioContext();
+                }
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            },
+            play: (type) => {
+                try {
+                    if (!audioCtx) return;
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    const now = audioCtx.currentTime;
+                    
+                    if(type === 'correct') {
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(400, now);
+                        osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+                        gain.gain.setValueAtTime(0, now);
+                        gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                        osc.start(now); osc.stop(now + 0.3);
+                    } else if(type === 'wrong') {
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(150, now);
+                        osc.frequency.exponentialRampToValueAtTime(40, now + 0.4);
+                        gain.gain.setValueAtTime(0, now);
+                        gain.gain.linearRampToValueAtTime(0.4, now + 0.05);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                        osc.start(now); osc.stop(now + 0.4);
+                    } else if(type === 'transform') {
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(100, now);
+                        osc.frequency.exponentialRampToValueAtTime(600, now + 0.8);
+                        gain.gain.setValueAtTime(0, now);
+                        gain.gain.linearRampToValueAtTime(0.3, now + 0.4);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 1);
+                        osc.start(now); osc.stop(now + 1);
+                    } else if(type === 'click') {
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(600, now);
+                        gain.gain.setValueAtTime(0.1, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        osc.start(now); osc.stop(now + 0.1);
+                    }
+                } catch (e) { console.log("Audio muted", e); }
+            }
+        };
+
+        // --- CORE LOGIC ---
+
+        function initGame() {
+            sfx.init(); sfx.play('click');
+            
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            
+            score = 0; currentStageIndex = 0;
+            updateScoreDisplay(0);
+            renderSidebarStages();
+            startStage();
+        }
+
+        function toggleSidebar() {
+            sfx.init(); sfx.play('click');
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        // --- Display settings: fullscreen ---
+        function toggleFullscreenMode() {
+            sfx.init(); sfx.play('click');
+            try {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    document.exitFullscreen().catch(() => {});
+                }
+            } catch (e) {}
+        }
+
+        // --- Ambient animated background: soft colored orbs drifting on their own ---
+        (function () {
+            const cvs = document.getElementById('aura-canvas');
+            if (!cvs) return;
+            const ctx = cvs.getContext('2d');
+            let w, h, orbs = [];
+            const palette = [
+                'rgba(255,94,0,0.10)', 'rgba(0,191,255,0.10)', 'rgba(138,43,226,0.08)',
+                'rgba(0,255,128,0.08)', 'rgba(255,20,147,0.10)', 'rgba(236,72,153,0.10)'
+            ];
+            function resize() { w = window.innerWidth; h = window.innerHeight; cvs.width = w; cvs.height = h; }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function Orb() { this.reset(); }
+            Orb.prototype.reset = function () {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.s = Math.random() * 300 + 100;
+                this.vx = (Math.random() - 0.5);
+                this.vy = (Math.random() - 0.5);
+                this.c = palette[Math.floor(Math.random() * palette.length)];
+                this.ba = Math.random() * 0.3 + 0.2;
+                this.p = Math.random() * Math.PI * 2;
+            };
+            Orb.prototype.update = function () {
+                this.x += this.vx; this.y += this.vy; this.p += 0.015;
+                if (this.x < -this.s * 2) this.x = w + this.s;
+                if (this.x > w + this.s * 2) this.x = -this.s;
+                if (this.y < -this.s * 2) this.y = h + this.s;
+                if (this.y > h + this.s * 2) this.y = -this.s;
+            };
+            Orb.prototype.draw = function () {
+                const a = this.ba + Math.sin(this.p) * 0.1;
+                const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.s);
+                const rm = this.c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+                if (rm) {
+                    g.addColorStop(0, `rgba(${rm[1]},${rm[2]},${rm[3]},${a})`);
+                    g.addColorStop(1, `rgba(${rm[1]},${rm[2]},${rm[3]},0)`);
+                }
+                ctx.globalCompositeOperation = 'screen';
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
+                ctx.fill();
+            };
+
+            for (let i = 0; i < 10; i++) orbs.push(new Orb());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                orbs.forEach(o => { o.update(); o.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        function renderSidebarStages() {
+            const container = document.getElementById('transformations-list');
+            container.innerHTML = '';
+            
+            stagesData.forEach((stage, index) => {
+                let statusClass = 'locked';
+                let iconHtml = '<i class="fa-solid fa-lock"></i>';
+                
+                if (index < currentStageIndex) {
+                    statusClass = 'unlocked'; iconHtml = '<i class="fa-solid fa-check"></i>';
+                } else if (index === currentStageIndex) {
+                    statusClass = 'current'; iconHtml = '<i class="fa-solid fa-bolt"></i>';
+                }
+
+                const item = document.createElement('div');
+                item.className = `stage-item ${statusClass}`;
+                item.innerHTML = `
+                    <div class="stage-icon">${iconHtml}</div>
+                    <div class="flex-grow">
+                        <div class="font-bold text-sm ${statusClass === 'current' ? 'text-white drop-shadow-md' : 'text-slate-300'}">${stage.name}</div>
+                        <div class="text-[10px] text-slate-500">المرحلة ${index + 1}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function startStage() {
+            const stage = stagesData[currentStageIndex];
+            stageStartScore = score;
+            
+            // UI Updates
+            const appBody = document.getElementById('app-body');
+            appBody.className = `min-h-screen flex flex-col relative ${stage.class} ${stage.bgClass}`;
+            document.getElementById('stage-name').innerText = stage.name;
+            
+            renderSidebarStages(); 
+
+            // Deep clone and shuffle questions
+            let pool = JSON.parse(JSON.stringify(stage.questions));
+            let shuffled = pool.sort(() => 0.5 - Math.random());
+            
+            // Limit to defined questions per stage (15)
+            activeQuestions = shuffled.slice(0, Math.min(Q_PER_STAGE, shuffled.length));
+            
+            // Shuffle options within each question to prevent memorizing positions (A,B,C,D)
+            activeQuestions.forEach(q => {
+                const correctAnswerText = q.options[q.a];
+                q.options.sort(() => 0.5 - Math.random());
+                q.a = q.options.indexOf(correctAnswerText); // Update index of correct answer
+            });
+
+            currentQIndex = 0;
+            updatePowerBar();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            canAnswer = true;
+            const qData = activeQuestions[currentQIndex];
+            
+            document.getElementById('question-counter').innerText = `سؤال ${currentQIndex + 1} / ${activeQuestions.length}`;
+            
+            const qText = document.getElementById('question-text');
+            qText.innerHTML = qData.q;
+            // Subtle typing effect for question
+            qText.style.opacity = 0;
+            setTimeout(() => { qText.style.transition = 'opacity 0.3s'; qText.style.opacity = 1; }, 50);
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            qData.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option shadow-md opacity-0 transform translate-y-4';
+                btn.innerHTML = `<div class="option-number w-8 h-8 rounded-full flex items-center justify-center ml-4 shrink-0 font-mono text-xs font-bold">${idx + 1}</div> <span class="flex-1 leading-snug font-bold text-sm md:text-base">${optText}</span>`;
+                
+                btn.onclick = () => handleAnswer(idx, btn);
+                container.appendChild(btn);
+                
+                // Staggered entrance animation
+                setTimeout(() => {
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'translateY(0)';
+                }, 100 + (idx * 100));
+            });
+        }
+
+        function handleAnswer(selectedIndex, btnEl) {
+            if(!canAnswer) return;
+            canAnswer = false;
+            
+            const stage = stagesData[currentStageIndex];
+            const qData = activeQuestions[currentQIndex];
+            const isCorrect = (selectedIndex === qData.a);
+            const allBtns = document.querySelectorAll('.btn-option');
+
+            if(isCorrect) {
+                sfx.play('correct');
+                btnEl.classList.add('correct');
+                
+                const points = 100 * stage.pointsMultiplier;
+                animateScore(score, score + points);
+                score += points;
+                
+                currentQIndex++;
+                updatePowerBar();
+                
+                setTimeout(() => {
+                    if(currentQIndex < activeQuestions.length) loadQuestion();
+                    else handleStageComplete();
+                }, 1200);
+
+            } else {
+                // HARDCORE MODE - Fail Stage
+                sfx.play('wrong');
+                btnEl.classList.add('wrong');
+                allBtns[qData.a].classList.add('correct'); // Show correct answer
+                
+                // Screen shake
+                document.getElementById('app-body').style.animation = 'none';
+                void document.getElementById('app-body').offsetWidth; 
+                document.getElementById('app-body').style.animation = 'shake 0.4s ease-in-out';
+                
+                setTimeout(() => { showTransition(false); }, 1800);
+            }
+        }
+
+        function handleStageComplete() {
+            currentStageIndex++;
+            if(currentStageIndex < stagesData.length) {
+                renderSidebarStages(); 
+                showTransition(true);
+            } else {
+                showVictory();
+            }
+        }
+
+        function updatePowerBar() {
+            const percent = (currentQIndex / activeQuestions.length) * 100;
+            document.getElementById('power-bar').style.width = `${percent}%`;
+        }
+
+        function animateScore(start, end) {
+            let current = start;
+            const inc = Math.ceil((end - start) / 20);
+            const timer = setInterval(() => {
+                current += inc;
+                if(current >= end) { current = end; clearInterval(timer); }
+                updateScoreDisplay(current);
+            }, 30);
+        }
+
+        function updateScoreDisplay(val) {
+            document.getElementById('score-display').innerText = val;
+        }
+
+        // --- SCREENS FLOW ---
+        let pendingAction = '';
+        function showTransition(isSuccess) {
+            document.getElementById('game-screen').classList.add('hidden');
+            const transScreen = document.getElementById('transition-screen');
+            transScreen.classList.remove('hidden');
+            
+            const title = document.getElementById('transition-title');
+            const msg = document.getElementById('transition-msg');
+            const icon = document.getElementById('transition-icon');
+            const btn = document.getElementById('transition-btn');
+
+            if(isSuccess) {
+                sfx.play('transform');
+                const nextStage = stagesData[currentStageIndex];
+                icon.innerText = "⚡";
+                title.innerText = "طاقة التحول اكتملت!";
+                title.className = "text-3xl md:text-5xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-600 drop-shadow-lg leading-tight";
+                msg.innerText = `استعد لدخول هيئة [ ${nextStage.name} ]`;
+                btn.innerText = "أطلق التحول 🔥";
+                btn.className = "w-full max-w-xs px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-black text-xl rounded-xl shadow-[0_0_30px_rgba(245,158,11,0.4)] transform transition hover:scale-105";
+                
+                document.getElementById('app-body').style.animation = 'stage-up 1s ease-in-out';
+                pendingAction = 'next_stage';
+            } else {
+                icon.innerText = "💀";
+                title.innerText = "تم محو طاقتك!";
+                title.className = "text-4xl md:text-5xl font-black mb-4 text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]";
+                msg.innerHTML = `لقد أخطأت التفاصيل! <br> نظام הـ Hardcore يعيدك لبداية <strong>هذه المرحلة</strong>. ركز أكثر فالأسئلة ستتغير.`;
+                btn.innerText = "إعادة المحاولة 🔄";
+                btn.className = "w-full max-w-xs px-8 py-4 bg-slate-900 text-red-500 font-black text-xl rounded-xl border border-red-900 shadow-lg transform transition hover:scale-105 hover:bg-slate-800";
+                
+                pendingAction = 'retry_stage';
+            }
+        }
+
+        function nextAction() {
+            sfx.play('click');
+
+            if (pendingAction === 'retry_stage') {
+                // Full page reload so ad placements can refresh/trigger.
+                // Persist just enough state to resume at the SAME stage with
+                // the score reset back to what it was before this stage started.
+                try {
+                    localStorage.setItem('bs_resume', '1');
+                    localStorage.setItem('bs_currentStage', String(currentStageIndex));
+                    localStorage.setItem('bs_baseScore', String(stageStartScore));
+                } catch (e) {}
+                location.reload();
+                return;
+            }
+
+            document.getElementById('transition-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            startStage(); // next stage
+        }
+
+        function showVictory() {
+            sfx.play('transform');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('victory-screen').classList.remove('hidden');
+            document.getElementById('app-body').className = 'min-h-screen flex flex-col relative form-ultimate bg-ultimate'; 
+            
+            animateScore(0, score);
+            document.getElementById('final-score').innerText = score;
+        }
+
+        // --- Resume after the ad-triggering reload (retry button) ---
+        // Single shared logo image (kept out of the HTML markup and set once
+        // via JS instead of duplicating a large base64 string three times).
+        (function () {
+            var LOGO_SRC = 'data:image/webp;base64,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';
+            document.querySelectorAll('.bs-logo-img').forEach(function (img) {
+                img.src = LOGO_SRC;
+            });
+        })();
+
+        window.onload = function () {
+            let shouldResume = false;
+            let savedStage = 0;
+            let savedScore = 0;
+            try {
+                if (localStorage.getItem('bs_resume') === '1') {
+                    shouldResume = true;
+                    savedStage = parseInt(localStorage.getItem('bs_currentStage') || '0', 10);
+                    savedScore = parseInt(localStorage.getItem('bs_baseScore') || '0', 10);
+                    localStorage.removeItem('bs_resume');
+                    localStorage.removeItem('bs_currentStage');
+                    localStorage.removeItem('bs_baseScore');
+                }
+            } catch (e) {}
+
+            if (shouldResume && savedStage >= 0 && savedStage < stagesData.length) {
+                currentStageIndex = savedStage;
+                score = isNaN(savedScore) ? 0 : savedScore;
+                updateScoreDisplay(score);
+                document.getElementById('start-screen').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                renderSidebarStages();
+                startStage();
+            }
+        };
+
+    </script>
+</body>
+</html>
